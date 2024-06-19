@@ -16,8 +16,8 @@ class ProdukController extends Controller
     {
         // index untuk produk
         $produk = Produk::join('jenis_produk', 'jenis_produk_id', '=', 'jenis_produk.id')
-        ->select('produk.*', 'jenis_produk.nama as jenis')
-        ->get();
+            ->select('produk.*', 'jenis_produk.nama as jenis')
+            ->get();
 
         return view('admin.produk.index', compact('produk'));
     }
@@ -37,15 +37,16 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'kode' => 'required|unique:produk|max:10',
-            'nama' => 'required|max:45',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
-            'stok' => 'required|numeric',
-            'min_stok' => 'required|numeric',
-            'foto' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-        ],
+        $request->validate(
+            [
+                'kode' => 'required|unique:produk|max:10',
+                'nama' => 'required|max:45',
+                'harga_beli' => 'required|numeric',
+                'harga_jual' => 'required|numeric',
+                'stok' => 'required|numeric',
+                'min_stok' => 'required|numeric',
+                'foto' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ],
             [
                 'kode.max' => 'Kode maksimal 10 karakter',
                 'kode.required' => 'Kode wajib diisi',
@@ -61,7 +62,7 @@ class ProdukController extends Controller
         // jika file foto ada yang terupload
         if (!empty($request->foto)) {
             // maka proses berikut yang dijalankan
-            $fileName = 'foto-'.uniqid().'.'.$request->foto->extension();
+            $fileName = 'foto-' . uniqid() . '.' . $request->foto->extension();
             // setelah tau fotonya sudah masuk maka tempatkan ke public
             $request->foto->move(public_path('admin/image'), $fileName);
         } else {
@@ -90,9 +91,9 @@ class ProdukController extends Controller
     public function show(string $id)
     {
         $produk = Produk::join('jenis_produk', 'jenis_produk_id', '=', 'jenis_produk.id')
-        ->select('produk.*', 'jenis_produk.nama as jenis')
-        ->where('produk.id', $id)
-        ->get();
+            ->select('produk.*', 'jenis_produk.nama as jenis')
+            ->where('produk.id', $id)
+            ->get();
 
         return view('admin.produk.detail', compact('produk'));
     }
@@ -124,10 +125,10 @@ class ProdukController extends Controller
         if (!empty($request->foto)) {
             // maka proses selanjutnya
             if (!empty($fotoLama->foto)) {
-                unlink(public_path('admin/image'.$fotoLama->foto));
+                unlink(public_path('admin/image' . $fotoLama->foto));
             }
             // proses ganti foto
-            $fileName = 'foto-'.$request->id.'.'.$request->foto->extension();
+            $fileName = 'foto-' . $request->id . '.' . $request->foto->extension();
             // setelah tau fotonya sudah masuk maka tempatkan ke public
             $request->foto->move(public_path('admin/image'), $fileName);
         } else {
@@ -157,5 +158,39 @@ class ProdukController extends Controller
         DB::table('produk')->where('id', $id)->delete();
 
         return redirect('admin/produk');
+    }
+
+    public function produkAPi()
+    {
+        $produk = Produk::join('jenis_produk', 'jenis_produk_id', '=', 'jenis_produk.id')
+            ->select('produk.*', 'jenis_produk.nama as jenis')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'List Data Produk',
+            'data' => $produk,
+        ], 200);
+    }
+
+    public function DetailApi($id)
+    {
+        $produk = Produk::join('jenis_produk', 'produk.jenis_produk_id', '=', 'jenis_produk.id')
+            ->select('produk.*', 'jenis_produk.nama as jenis')
+            ->where('produk.id', $id)
+            ->first();
+
+        if ($produk) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Produk',
+                'data' => $produk,
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk tidak ditemukan',
+            ], 404);
+        }
     }
 }

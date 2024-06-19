@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth', 'checkActive', 'role:admin|manager|staff'
         Route::post('/jenis_produk/store', [JenisProdukController::class, 'store']);
         // route dengan pemanggilan class
         Route::resource('produk', ProdukController::class);
+
         Route::resource('pelanggan', PelangganController::class);
 
         Route::get('/kartu', [KartuController::class, 'index']);
@@ -70,3 +71,7 @@ Route::group(['middleware' => ['auth', 'checkActive', 'role:admin|manager|staff'
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    // route api
+Route::get('produkApi', [ProdukController::class, 'produkAPi']);
+Route::get('produkApi/{id}', [ProdukController::class, 'DetailApi']);
