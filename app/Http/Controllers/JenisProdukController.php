@@ -1,6 +1,6 @@
 <?php
-//jenis produk dan produk akan dibuat menggunakan 
-//type penulisan Query Builder 
+//jenis produk dan produk akan dibuat menggunakan
+//type penulisan Query Builder
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -43,8 +43,8 @@ class JenisProdukController extends Controller
         DB::table('jenis_produk')->insert([
             'nama'=> $request->nama,
         ]);
-        //return view mengarahkan ke file sebelum proses atau akan diproses 
-        //return redirect mengarahkan ke file setelah proses 
+        //return view mengarahkan ke file sebelum proses atau akan diproses
+        //return redirect mengarahkan ke file setelah proses
         return redirect('admin/jenis_produk');
         // redirect()->back();
     }

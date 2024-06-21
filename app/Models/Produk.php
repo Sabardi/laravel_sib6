@@ -15,6 +15,7 @@ class Produk extends Model
         'min_stok', 'jenis_produk_id'
     ];
 
+    public $timestamps = false;
     public function jenis_produk(){
         return $this->belongsTo(JenisProduk::class);
     }
